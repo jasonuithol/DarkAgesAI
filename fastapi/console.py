@@ -2,7 +2,7 @@ import random
 
 from domain.classes import Location, World, Item, Player
 from services.factories import AiEngine, AiChatContext, AiObjectFactory, WorldFactory
-from services.display import display, BOLD, CYAN, RED, GREEN, RESET
+from services.display import display, BOLD, CYAN, RED, GREEN, RESET, YELLOW
 
 #
 # CONSOLE ONLY
