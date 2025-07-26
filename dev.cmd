@@ -1,6 +1,6 @@
 @echo off
 
-WORKING_DIR=%USERPROFILE%\Desktop\Projects\DarkAgesAI
+WORKING_DIR=%~dp0
 cd %WORKING_DIR%
 
 start "npm" cmd /k "cd my-app && npm start"
