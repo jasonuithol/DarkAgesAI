@@ -7,16 +7,11 @@ Create a "Read" token at the HuggingFace website (free)
 
 '''
 
-import random
-import json
-import httpx
-import asyncio
-import aiofiles
 
 from services.display import display, CYAN
 
-from typing import Optional, Dict, Any, Tuple
-from pydantic import BaseModel, Field, TypeAdapter
+from typing import Optional, Dict, Tuple
+from pydantic import BaseModel, Field
 
 class Item(BaseModel):
     item_type: str

@@ -3,10 +3,18 @@
 WORKING_DIR=%~dp0
 cd %WORKING_DIR%
 
-start "npm" cmd /k "cd my-app && npm start"
-start "uvicorn" cmd /k "cd fastapi && uvicorn main:app --reload"
+rem Start the React frontend server
+start "npm" cmd /k "cd my-app && npm install && npm start"
+
+rem Start the FastAPI backend server
+start "uvicorn" cmd /k "cd fastapi && pip_install.cmd && uvicorn main:app --reload"
+
+rem Wait for the services to start
+timeout /t 5 /nobreak >nul
+
+rem Start the proxy server that glues the frontend and backend together
 start "nginx" cmd /k "cd nginx && nginx -c nginx.conf"
-start "git" cmd /k "git status && echo Ready"
 
-
+rem Open the browser and check git status
+start "git" cmd /k "start http://localhost && git status && echo Ready"
 

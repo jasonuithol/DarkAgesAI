@@ -7,17 +7,12 @@ pip install aiofiles
 
 '''
 
-import base64
-import random
-import asyncio
 import aiofiles
 import logging
 
-from domain.classes import Location, World, Item, Player
-from services.factories import AiEngine, AiChatContext, AiObjectFactory, WorldFactory
+from services.factories import AiEngine, AiObjectFactory, WorldFactory
 from services.display import display
 
-from io import BytesIO
 from fastapi import FastAPI, Body
 from contextlib import asynccontextmanager
 
@@ -26,7 +21,7 @@ logging.getLogger("httpx").setLevel(logging.DEBUG)  # for httpx
 logging.getLogger("urllib3").setLevel(logging.DEBUG)  # for requests
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI): 
 
     # I/O call to disk
     async with aiofiles.open("token.txt", "r") as file:

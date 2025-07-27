@@ -2,7 +2,7 @@
 requirements:
 
 pip install huggingface_hub
-pip install Pillow
+pip install Pillow # for HuggingFace image processing
 pip install pydantic
 
 Create a "Read" token at the HuggingFace website (free)
@@ -12,11 +12,9 @@ Create a "Read" token at the HuggingFace website (free)
 import base64
 import random
 import json
-import httpx
 import asyncio
 import aiofiles
 import aiofiles.ospath
-import os
 
 from domain.classes import Location, World, Item, Player
 from services.display import display
@@ -24,7 +22,7 @@ from services.display import display
 from io import BytesIO
 from pydantic import TypeAdapter
 from huggingface_hub import InferenceClient
-from huggingface_hub.errors import BadRequestError, HfHubHTTPError
+#from huggingface_hub.errors import BadRequestError, HfHubHTTPError
 
 class AiChatContext:
     def __init__(self):
