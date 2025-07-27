@@ -1,7 +1,8 @@
-import { Button, Text, Loader, Flex, Box, Image, ActionIcon } from '@mantine/core';
+import { Button, Text, Flex, Box, Image } from '@mantine/core';
 import { useState, useEffect } from "react";
 import { ItemGallery } from './ItemGallery';
 import { BattleSpinner } from './BattleSpinner';
+import { DirectionalControls } from './DirectionalControls';
 
 export function MainLayout({ apiEndpoint }) {
 
@@ -83,43 +84,9 @@ export function MainLayout({ apiEndpoint }) {
       <Box style={{ flex: 1, padding: '2rem' }} bg="dark.7">
         <Text size="xl" color="cyan" weight={700}>{entry.name}</Text>
         <Text size="md" color="dimmed" mt="md">{entry.description}</Text>
-            {/* <Button mt="xl" onClick={handleReload}>🔁 Reload Entry</Button> */}
 
         {/* 🧭 Directional Controls */}
-        <Box mt="xl">
-          <Flex gap="sm" wrap="wrap">
-            {isMoving ? (
-              <>
-                  <Loader size="sm"/>
-                  <Text ml="sm">Loading...</Text> {/* 👈 friendly feedback */}
-              </>
-            ) : (
-                <Box mt="xl">
-                  <Text size="sm" color="cyan" weight={600} mb="sm">Where shall you go next ?</Text>
-
-                  <Flex direction="column" align="center" gap="sm">
-                    {/* North */}
-                    <Button onClick={() => handleMove('n')}>N</Button>
-
-                    {/* Middle row: West, Icon, East */}
-                    <Flex gap="sm" align="center">
-                      <Button onClick={() => handleMove('w')}>W</Button>
-
-                      {/* 🧭 Center Compass Icon */}
-                      <ActionIcon size="lg" variant="outline">
-                        <span role="img" aria-label="compass">🧭</span>
-                      </ActionIcon>
-
-                      <Button onClick={() => handleMove('e')}>E</Button>
-                    </Flex>
-
-                    {/* South */}
-                    <Button onClick={() => handleMove('s')}>S</Button>
-                  </Flex>
-                </Box>
-            )}
-          </Flex>
-        </Box>
+        <DirectionalControls isMoving={isMoving} onMove={handleMove} />
 
         {/* Right hand panel source switches */}
         <Box mt="xl">
