@@ -28,15 +28,7 @@ class Location(BaseModel):
 class Player(BaseModel):
     x: int = 0
     y: int = 0
-    items: list[Item] = Field(
-        default_factory=lambda: [
-            Item(item_type="weapon", name="rusty dagger", description="Nature has found a way to cause a dagger to exist that is more rust than iron.", image=""),
-            Item(item_type="armour", name="tattered rags", description="It's possible that being nude would provide more damage protection than these rags.", image=""),
-            Item(item_type="money", name="filthy copper piece", description="It's some sort of amorphous copper blob covered in grime.", image=""),
-            Item(item_type="spellbook", name="novice illusions", description="Contains the following spells: ['dim light', 'pick a card']", image="")
-        ]
-    )
-    
+    items: list[Item] = Field(default_factory=list)
         
     def get_position(self):
         return self.x, self.y
@@ -72,8 +64,10 @@ class Player(BaseModel):
             
 class World(BaseModel):
     backstory: str
-    locations: Dict[Tuple[int, int], Location] = {}
-    player: Player = Player()
+    player: Player
+    locations: Dict[Tuple[int, int], Location] = Field(default_factory=dict)
+
+    # a special location that is the nowhere location.
     uncharted: Location = Field(
         default_factory=lambda: Location(
             name="uncharted", 
