@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Box } from '@mantine/core';
 import { IconSword, IconShield } from '@tabler/icons-react';
-//import IconSword from '@tabler/icons-react/dist/icons/IconSword';
-//import IconShield from '@tabler/icons-react/dist/icons/IconShield';
 
 export const BattleSpinner = () => {
   const [activeIndex, setActiveIndex] = useState(0);

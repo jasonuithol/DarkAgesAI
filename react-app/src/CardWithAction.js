@@ -1,5 +1,5 @@
 import { Card, Button, Text, Image } from '@mantine/core';
-import React, { useState } from "react";
+import { useState } from "react";
 
 export function CardWithAction({ entry, postUrl, buttonText, reloadGallery }) {
   const [hovered, setHovered] = useState(false);

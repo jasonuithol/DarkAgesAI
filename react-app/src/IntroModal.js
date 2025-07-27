@@ -1,7 +1,7 @@
 import { Modal, Button, Text, Loader, Group, Center } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import axios from 'axios';
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export function IntroModal({ onBegin, apiEndpoint }) {
   const [opened, { close }] = useDisclosure(true); // starts open

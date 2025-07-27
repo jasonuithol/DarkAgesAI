@@ -1,5 +1,5 @@
 import { Button, Text, Loader, Flex, Box, Image, ActionIcon } from '@mantine/core';
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { ItemGallery } from './ItemGallery';
 import { BattleSpinner } from './BattleSpinner';
 
@@ -12,9 +12,6 @@ export function MainLayout({ apiEndpoint }) {
   const [error, setError] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0); // 🔁 this triggers re-fetch
   const [isMoving, setIsMoving] = useState(false);
-
-//  const handleReload = () => setRefreshKey(prev => prev + 1);
-//  const [rightPanelSource, setRightPanelSource] = useState('/api/location/items');
 
   const [galleryParams, setGalleryParams] = useState({
       apiEndpoint: "/api/location/items",
