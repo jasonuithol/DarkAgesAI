@@ -1,8 +1,9 @@
-import { Button, Text, Flex, Box, Image } from '@mantine/core';
+import { Flex, Box, Image } from '@mantine/core';
 import { useState, useEffect } from "react";
+
 import { ItemGallery } from './ItemGallery';
 import { BattleSpinner } from './BattleSpinner';
-import { DirectionalControls } from './DirectionalControls';
+import { LocationDetails } from './LocationDetails';
 
 export function MainLayout({ apiEndpoint }) {
 
@@ -82,40 +83,13 @@ export function MainLayout({ apiEndpoint }) {
 
       {/* Center: Title + Description + Button */}
       <Box style={{ flex: 1, padding: '2rem' }} bg="dark.7">
-        <Text size="xl" color="cyan" weight={700}>{entry.name}</Text>
-        <Text size="md" color="dimmed" mt="md">{entry.description}</Text>
-
-        {/* 🧭 Directional Controls */}
-        <DirectionalControls isMoving={isMoving} onMove={handleMove} />
-
-        {/* Right hand panel source switches */}
-        <Box mt="xl">
-          <Flex gap="sm" justify="center">
-            <Button
-              onClick={() => setGalleryParams({
-                  apiEndpoint: "/api/location/items",
-                  actionPostUrl: "/api/take",
-                  actionButtonText: "Take"
-              })}
-              variant="light"
-              color="gray"
-            >
-              Local Items
-            </Button>
-            <Button
-              onClick={() => setGalleryParams({
-                  apiEndpoint: "/api/inventory",
-                  actionPostUrl: "/api/drop",
-                  actionButtonText: "Drop"
-              })}
-              variant="light"
-              color="gray"
-            >
-              Inventory
-            </Button>
-          </Flex>
-        </Box>
-
+        <LocationDetails
+          entry={entry}
+          isMoving={isMoving}
+          handleMove={handleMove}
+          galleryParams={galleryParams}
+          setGalleryParams={setGalleryParams}
+        />
       </Box>
 
       {/* Right panel: ImageGallery */}
