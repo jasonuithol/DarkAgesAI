@@ -11,10 +11,10 @@ function App() {
   return (
     <>
       {showIntro ? (
-        <IntroScreen onBegin={handleBegin} apiEndpoint="http://localhost/api"/>
+        <IntroScreen onBegin={handleBegin} apiEndpoint="/api"/>
       ) : (
         <MainLayout
-          apiEndpoint="http://localhost/api/location"
+          apiEndpoint="/api/location"
         />
       )}
     </>
