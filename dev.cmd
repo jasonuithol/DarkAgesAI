@@ -1,10 +1,10 @@
 @echo off
 
-WORKING_DIR=%~dp0
-cd %WORKING_DIR%
+set "WORKING_DIR=%~dp0"
+cd "%WORKING_DIR%"
 
 rem Start the React frontend server
-start "npm" cmd /k "cd my-app && npm install && npm start"
+start "npm" cmd /k "cd react-app && npm install && npm start"
 
 rem Start the FastAPI backend server
 start "uvicorn" cmd /k "cd fastapi && pip_install.cmd && uvicorn main:app --reload"
