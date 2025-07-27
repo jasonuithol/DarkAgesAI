@@ -29,3 +29,7 @@ Place your token in the following file path:
 Make sure:
 - The `token.txt` file contains only the token (no extra characters or line breaks).
 - The file is readable by your FastAPI app.
+
+# ▶️ Starting the Game
+
+To launch the game, simply double-click the `dev.cmd` file located in the project root folder. This script will start all required services in development mode (the only mode so far supported.)
