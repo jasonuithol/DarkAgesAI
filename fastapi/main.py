@@ -10,7 +10,9 @@ pip install aiofiles
 import aiofiles
 import logging
 
-from services.factories import AiEngine, AiObjectFactory, WorldFactory
+from domain.config import Config
+from services.factories import AiObjectFactory, WorldFactory
+from services.aiengines import get_engine
 from services.display import display
 
 from fastapi import FastAPI, Body
@@ -20,22 +22,29 @@ logging.basicConfig(level=logging.DEBUG)
 logging.getLogger("httpx").setLevel(logging.DEBUG)  # for httpx
 logging.getLogger("urllib3").setLevel(logging.DEBUG)  # for requests
 
+#
+# Helper functions for SETUP/TEARDOWN
+#
+
+async def get_config() -> Config:
+    async with aiofiles.open("config.json", "r") as file:
+        config_data = await file.read()
+    return Config.model_validate_json(config_data)
+
+async def create_world_factory(config: Config) -> WorldFactory:
+    engine = await get_engine(config)
+    return WorldFactory(
+        ai_object_factory=AiObjectFactory(
+            ai_engine=engine
+        )
+    )
+
 @asynccontextmanager
 async def lifespan(app: FastAPI): 
 
-    # I/O call to disk
-    async with aiofiles.open("token.txt", "r") as file:
-        ai_engine = AiEngine(
-            text_model="meta-llama/Meta-Llama-3-8B-Instruct", # 8,962 token limit
-            image_model="black-forest-labs/FLUX.1-dev",
-            token=await file.read()
-        )
+    config = await get_config()
 
-    app.state.world_factory = WorldFactory(
-        ai_object_factory = AiObjectFactory(
-            ai_engine=ai_engine
-        )
-    )
+    app.state.world_factory = await create_world_factory(config)
     
     # Ensure the world exists.
     app.state.world = await app.state.world_factory.get_world()
@@ -51,7 +60,9 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Helper functions
+#
+# Helper functions for ROUTES
+#
 
 def get_player():
     return app.state.world.player

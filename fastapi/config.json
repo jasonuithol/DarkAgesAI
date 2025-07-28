@@ -1,0 +1,19 @@
+{
+    "aiengines": [
+        {
+            "engine_class": "AiEngineHuggingFace",
+            "properties": {
+                "text_model": "meta-llama/Meta-Llama-3-8B-Instruct",
+                "image_model": "black-forest-labs/FLUX.1-dev",
+                "token_file": "token.txt"
+            }
+        },
+        {
+            "engine_class": "AiEngineTest",
+            "properties": {
+            }
+        }
+    ],
+    "chosen_aiengine": 1,
+    "save_file": "save/world.json"
+}

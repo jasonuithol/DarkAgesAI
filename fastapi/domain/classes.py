@@ -7,7 +7,6 @@ Create a "Read" token at the HuggingFace website (free)
 
 '''
 
-
 from services.display import display, CYAN
 
 from typing import Optional, Dict, Tuple

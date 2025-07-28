@@ -1,95 +1,20 @@
 """
 requirements:
 
-pip install huggingface_hub
-pip install Pillow # for HuggingFace image processing
 pip install pydantic
-
-Create a "Read" token at the HuggingFace website (free)
 
 """
 
-import base64
 import random
 import json
-import asyncio
 import aiofiles
 import aiofiles.ospath
 
-from domain.classes import Location, World, Item, Player
-from services.display import display
-
-from io import BytesIO
 from pydantic import TypeAdapter
-from huggingface_hub import InferenceClient
 
-# from huggingface_hub.errors import BadRequestError, HfHubHTTPError
-
-
-class AiChatContext:
-    def __init__(self):
-        self.messages = []
-
-    def add_message(self, role, content):
-        self.messages.append({"role": role, "content": content})
-
-    def add_system_message(self, content):
-        self.add_message("system", content)
-
-    def add_system_messages(self, contents):
-        for content in contents:
-            self.add_system_message(content)
-
-    def add_user_message(self, content):
-        self.add_message("user", content)
-
-    def add_assistant_message(self, content):
-        self.add_message("assistant", content)
-
-
-class AiEngine:
-    def __init__(self, text_model, image_model, token):
-        self.text_model = text_model
-        self.image_model = image_model
-        self.token = token
-        self.client = InferenceClient(token=token)
-
-    def chat_completion(self, context):
-
-        response = self.client.chat_completion(
-            context.messages, model=self.text_model)
-
-        if len(response.choices) > 1:
-            print("ERROR: Multiple response blocks.")
-            exit()
-
-        # Obtain the response message
-        # Ideally set n=1 - do it if there is missing reply content
-        reply = response.choices[0].message["content"]
-
-        return reply
-
-    async def chat_completion_async(self, context):
-        return await asyncio.get_running_loop().run_in_executor(
-            None, lambda: self.chat_completion(context)
-        )
-
-    def text_to_image(self, prompt, size=None):
-        if size:
-            image = self.client.text_to_image(
-                prompt, width=size[0], height=size[1], model=self.image_model
-            )
-        else:
-            image = self.client.text_to_image(prompt, model=self.image_model)
-        buffer = BytesIO()
-        image.save(buffer, format="PNG")  # PIL compatible.
-        return base64.b64encode(buffer.getvalue()).decode("utf-8")
-
-    async def text_to_image_async(self, prompt, size=None):
-        return await asyncio.get_running_loop().run_in_executor(
-            None, lambda: self.text_to_image(prompt)
-        )
-
+from domain.classes import Location, World, Item, Player
+from services.aiengines import AiChatContext
+from services.display import display
 
 class AiObjectFactory:
     def __init__(self, ai_engine):
@@ -105,15 +30,13 @@ class AiObjectFactory:
 
         return await self.ai_engine.chat_completion_async(context)
 
-    async def create_location(self, position, exits, backstory, locations):
-
-        #        exits = self.build_exits_message(position, include_description=True)
+    async def create_location(self, exits, backstory, locations):
 
         context = AiChatContext()
         context.add_system_messages(
             [
                 "You are playing a fantasy rogue-like game.",
-                f"Backstory: {backstory}",
+                f"Backstory: {backstory}"
                 "You are looking about a new location you have discovered.",
                 f"These are the surrounding locations in a dictionary.  Please make the new location consistent with it's known (charted) surrounds: \n{exits}",
                 f"Come up with a short, unique name for this location, and say ONLY the name, no other guff please. The following names are already taken: {list(map(lambda x: x.name, locations.values()))}",
@@ -226,7 +149,7 @@ class WorldFactory:
             position, include_description=True
         )
         new_location = await self.ai_object_factory.create_location(
-            position, exits, self.world.backstory, self.world.locations
+            exits, self.world.backstory, self.world.locations
         )
 
         make_item = random.choice([True, False])
