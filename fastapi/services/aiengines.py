@@ -14,15 +14,15 @@ import base64
 import json
 import random
 
-import time
+#import time
 
 from io import BytesIO
 from PIL import Image
 from typing import Protocol, Tuple
-from threading import Lock
+#from threading import Lock
 
 # AI providers (and test provider)
-from openai import OpenAI
+#from openai import OpenAI
 
 from wonderwords import RandomSentence, RandomWord
 from huggingface_hub import InferenceClient 
