@@ -29,17 +29,17 @@ class Player(BaseModel):
     y: int = 0
     items: list[Item] = Field(default_factory=list)
         
-    def get_position(self):
+    def get_position(self) -> Tuple[int, int]:
         return self.x, self.y
        
     def move(self, dir_x = 0, dir_y = 0):
         self.x += dir_x
         self.y += dir_y
- 
-    def find_item(self, item_name, items):
+
+    def find_item(self, item_name: str, items: list[Item]) -> Optional[Item]:
         return next(filter(lambda x: x.name == item_name, items), None)
- 
-    def take_item(self, item_name, location):
+
+    def take_item(self, item_name: str, location: Location) -> bool:
         item = self.find_item(item_name, location.items)
         if item:
             self.items.append(item)
@@ -50,7 +50,7 @@ class Player(BaseModel):
             display(f"Could not find item: {item_name}")
             return False
         
-    def drop_item(self, item_name, location):
+    def drop_item(self, item_name: str, location: Location) -> bool:
         item = self.find_item(item_name, self.items)
         if item:
             self.items.remove(item)
@@ -75,8 +75,8 @@ class World(BaseModel):
         ),
         exclude=True
     )
-           
-    def get_exit_locations(self, position):
+
+    def get_exit_locations(self, position: Tuple[int, int]) -> Dict[str, Location]:
         x, y = position
         return {
             "n": self.locations.get((x, y + 1), self.uncharted),
@@ -84,8 +84,8 @@ class World(BaseModel):
             "e": self.locations.get((x + 1, y), self.uncharted),
             "w": self.locations.get((x - 1, y), self.uncharted)
         }
- 
-    def build_exits_message(self, position, include_description=False):
+
+    def build_exits_message(self, position: Tuple[int, int], include_description: bool = False) -> str:
         exits = self.get_exit_locations(position)
         return (
             f"To the north is {exits['n'].name} {exits['n'].description if include_description else ''}\n"

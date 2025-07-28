@@ -8,11 +8,12 @@ Create a "Read" token at the HuggingFace website (free)
 '''
 
 from services.display import display, CYAN
-from typing import Any
+from typing import Any, Optional
 from pydantic import BaseModel, Field
 
 class AiEngineConfig(BaseModel):
     engine_class: str
+    token_file: Optional[str]
     properties: dict[str, Any] = Field(default_factory=dict)
 
 class Config(BaseModel):

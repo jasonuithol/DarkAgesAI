@@ -1,7 +1,7 @@
 import random
 
 from domain.classes import Location, World, Item, Player
-from services.factories import AiEngine, AiChatContext, AiObjectFactory, WorldFactory
+from services.factories import AiEngine, AiChatContext, AiObjectFactory, WorldFactory 
 from services.display import display, BOLD, CYAN, RED, GREEN, RESET, YELLOW
 
 #
@@ -10,7 +10,7 @@ from services.display import display, BOLD, CYAN, RED, GREEN, RESET, YELLOW
     
 def look(self):
     position = self.get_position()
-    location = self.get_location()
+    location = self.get_location() 
     if location.image:
         location.image.show()
     self.display(location.description)

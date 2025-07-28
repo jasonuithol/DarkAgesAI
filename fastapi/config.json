@@ -1,16 +1,25 @@
 {
     "aiengines": [
         {
+            "engine_class": "AiEngineTest",
+            "token_file": null,
+            "properties": {}
+        },
+        {
             "engine_class": "AiEngineHuggingFace",
+            "token_file": "token-hf.txt",
             "properties": {
                 "text_model": "meta-llama/Meta-Llama-3-8B-Instruct",
-                "image_model": "black-forest-labs/FLUX.1-dev",
-                "token_file": "token.txt"
+                "image_model": "black-forest-labs/FLUX.1-dev"
             }
         },
         {
-            "engine_class": "AiEngineTest",
+            "engine_class": "AiEngineOpenAI",
+            "token_file": "token-openai.txt",
             "properties": {
+                "text_model": "gpt-4o",
+                "image_model": "dall-e-3",
+                "cooldown_seconds": 5
             }
         }
     ],

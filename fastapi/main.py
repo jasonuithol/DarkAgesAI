@@ -7,10 +7,12 @@ pip install aiofiles
 
 '''
 
+from typing import Tuple
 import aiofiles
 import logging
 
 from domain.config import Config
+from domain.classes import Player, World, Location, Item
 from services.factories import AiObjectFactory, WorldFactory
 from services.aiengines import get_engine
 from services.display import display
@@ -64,13 +66,13 @@ app = FastAPI(
 # Helper functions for ROUTES
 #
 
-def get_player():
+def get_player() -> Player:
     return app.state.world.player
 
-def get_position():
+def get_position() -> Tuple[int, int]:
     return get_player().get_position()
 
-async def get_player_location():
+async def get_player_location() -> Location:
     return await app.state.world_factory.get_location(get_position())
 
 # HANDLERS
@@ -80,7 +82,7 @@ async def read_root():
     return app.state.world.backstory 
 
 @app.get("/location")
-async def get_locationX(): 
+async def get_location() -> dict[str, str]: 
     # might make an I/O call to an AI model.
     location = await get_player_location()
     
@@ -92,22 +94,22 @@ async def get_locationX():
 
 # not used
 @app.get("/locations")
-async def get_locations():
+async def get_locations() -> dict[str, str]:
     return [{"key": key, "location_name": value.name} for key, value in app.state.world.locations.items()]
 
 @app.get("/location/items")
-async def get_location_items():
+async def get_location_items() -> list[dict[str, str]]:
     # might make an I/O call to an AI model.
     location = await get_player_location()
-    return [x.dict() for x in location.items]
+    return [x.dict() for x in location.items] 
 
-# not actually async
+# not actually async, not actually used either.
 @app.get("/location/exits")
-async def get_location_exits():
+async def get_location_exits() -> str:
     return app.state.world.build_exits_message(get_position(), include_description=False)
 
 @app.post("/move")
-async def move(player_choice: str = Body()): 
+async def move(player_choice: str = Body()) -> dict[str, str]: 
     player = get_player()
     old_position = player.get_position() 
     
@@ -126,20 +128,20 @@ async def move(player_choice: str = Body()):
     return {"result": "OK"}
 
 @app.get("/inventory")
-async def get_inventory():    
+async def get_inventory() -> list[dict[str, str]]:
     return [
         x.dict()
         for x in get_player().items
     ]
 
 @app.post("/take")
-async def choice(item_name: str = Body()):
+async def take(item_name: str = Body()) -> dict[str, str]:
     location = await get_player_location()
     get_player().take_item(item_name, location)
     return {"result": "OK"}
 
 @app.post("/drop")
-async def choice(item_name: str = Body()):
+async def drop(item_name: str = Body()) -> dict[str, str]:
     location = await get_player_location()
     get_player().drop_item(item_name, location)
     return {"result": "OK"}

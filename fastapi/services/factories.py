@@ -10,27 +10,29 @@ import json
 import aiofiles
 import aiofiles.ospath
 
+from typing import Tuple
 from pydantic import TypeAdapter
 
 from domain.classes import Location, World, Item, Player
-from services.aiengines import AiChatContext
+from services.aiengines import AiChatContext, AiEngine
 from services.display import display
 
 class AiObjectFactory:
-    def __init__(self, ai_engine):
+    def __init__(self, ai_engine: AiEngine):
         self.ai_engine = ai_engine
 
-    async def create_backstory(self):
+    async def create_backstory(self) -> str:
         context = AiChatContext()
         context.add_system_message(
-            "You are playing a fantasy rogue-like game.")
+            "You are playing a fantasy rogue-like game."
+        )
         context.add_user_message(
             "Come up with a backstory for the game that will allow cohesive generation of locations and items.  The tone should be of a narrator to a player, so avoid meta talk.  Do not mention inventory, or ask what to do next.  Just describe the backstory itself."
         )
 
         return await self.ai_engine.chat_completion_async(context)
 
-    async def create_location(self, exits, backstory, locations):
+    async def create_location(self, exits: dict[str, str], backstory: str, locations: dict[str, Location]) -> Location:
 
         context = AiChatContext()
         context.add_system_messages(
@@ -55,16 +57,17 @@ class AiObjectFactory:
 
         return Location(**responseJson)
 
-    async def create_item_image(self, description):
+    async def create_item_image(self, description: str) -> str:
         return await self.ai_engine.text_to_image_async(
             description, 
             size=(128, 128)
         )
-    
-    async def create_item(self, backstory):
+
+    async def create_item(self, backstory: str) -> Item:
 
         item_type = random.choice(
-            "weapon,spellbook,money,gem,armour,relic".split(","))
+            "weapon,spellbook,money,gem,armour,relic".split(",")
+        )
 
         context = AiChatContext()
         context.add_system_messages(
@@ -87,7 +90,7 @@ class AiObjectFactory:
 
         return Item(**responseJson)
 
-    async def create_player(self):
+    async def create_player(self) -> Player:
         items = [
             Item(item_type="weapon", name="rusty dagger", description="Nature has found a way to cause a dagger to exist that is more rust than iron.", image=""),
             Item(item_type="armour", name="tattered rags", description="It's possible that being nude would provide more damage protection than these rags.", image=""),
@@ -105,12 +108,12 @@ class WorldFactory:
         self.WORLD_FILENAME = "save/world.json"
         self.world = None
 
-    async def save_world(self, world):
+    async def save_world(self, world: World):
         async with aiofiles.open(self.WORLD_FILENAME, "w") as file:
             json_str = world.model_dump_json(indent=4)
             await file.write(json_str)
 
-    async def load_world(self):
+    async def load_world(self) -> World:
         async with aiofiles.open(self.WORLD_FILENAME, "r") as file:
             json_str = await file.read()
             if json_str.strip() == "":
@@ -128,12 +131,12 @@ class WorldFactory:
         world = adapter.validate_python(raw)
         return world
 
-    async def create_world(self):
+    async def create_world(self) -> World:
         backstory = await self.ai_object_factory.create_backstory()
         player = await self.ai_object_factory.create_player()
         return World(backstory=backstory, player=player)
 
-    async def get_world(self):
+    async def get_world(self) -> World:
         if not self.world:
             if await aiofiles.ospath.exists(self.WORLD_FILENAME):
                 display("Loading world from disk")
@@ -144,7 +147,7 @@ class WorldFactory:
                 await self.save_world(self.world)
         return self.world
 
-    async def add_new_location(self, position):
+    async def add_new_location(self, position: Tuple[int, int]) -> Location:
         exits = self.world.build_exits_message(
             position, include_description=True
         )
@@ -163,7 +166,7 @@ class WorldFactory:
 
         return new_location
 
-    async def get_location(self, position):
+    async def get_location(self, position: Tuple[int, int]) -> Location:
         location = self.world.locations.get(position)
 
         if location is None:

@@ -1,3 +1,5 @@
+from typing import Any
+
 # ANSI escape codes
 RESET = "\033[0m"
 BOLD = "\033[1m"
@@ -22,7 +24,6 @@ BG_BLUE = "\033[44m"
 BG_MAGENTA = "\033[45m"
 BG_CYAN = "\033[46m"
 BG_WHITE = "\033[47m"
-
         
-def display(message): 
+def display(message: Any): 
     print(f"{RESET}\n\n{message}")
