@@ -3,6 +3,7 @@
 - **Operating System**: Windows
 - **Accounts Needed**: [Hugging Face](https://huggingface.co/join) OR [OpenAI](https://auth.openai.com/create-account)
 
+
 # 📦 Installation
 
 Download and install the following:
@@ -11,11 +12,15 @@ Download and install the following:
 - [Node.js](https://nodejs.org/)
 - [Nginx](https://nginx.org/en/download.html)
 
+Add Python to your System Path (Environment Variable).
+Add NGINX to your System Path (Environment Variable).
+
 Download and unzip the following into a new directory:
 
 - [DarkAgesAI](https://github.com/jasonuithol/DarkAgesAI/archive/refs/heads/master.zip)
 
-# 🔐 Hugging Face Setup
+
+# 🔐 Hugging Face Setup (NOTE: YOU'LL GET TWO FREE LOCATIONS - IT's $9AUD/month FOR PROPER ACCESS)
 
 To access models or datasets:
 
@@ -25,7 +30,7 @@ To access models or datasets:
 4. Save your token in a new file at `/fastapi/token-hf.txt`
 
 
-# 🔐 OpenAI Setup
+# 🔐 OpenAI Setup (EXPERIMENTAL - NO FREE ACCESS SO UNTESTED)
 
 To access models or datasets:
 
@@ -39,8 +44,11 @@ To access models or datasets:
 
 Make sure:
 - The file contains only the token (no extra characters or line breaks).
-- The file is readable by your FastAPI app.
+
 
 # ▶️ Starting the Game
 
 To launch the game, simply double-click the `dev.cmd` file located in the project root folder. This script will start all required services in development mode (the only mode so far supported.)
+
+The game should automatically launch in your browser, but if it doesn't, click here: [START GAME](http://localhost)
+
