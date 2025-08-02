@@ -23,6 +23,6 @@
             }
         }
     ],
-    "chosen_aiengine": 1,
+    "chosen_aiengine": 0,
     "save_file": "save/world.json"
 }

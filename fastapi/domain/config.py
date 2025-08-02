@@ -6,8 +6,6 @@ pip install pydantic
 Create a "Read" token at the HuggingFace website (free)
 
 '''
-
-from services.display import display, CYAN
 from typing import Any, Optional
 from pydantic import BaseModel, Field
 
@@ -20,4 +18,3 @@ class Config(BaseModel):
     aiengines: list[AiEngineConfig] = Field(default_factory=list)
     chosen_aiengine: int
     save_file: str
-
