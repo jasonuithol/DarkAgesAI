@@ -12,7 +12,7 @@ cd "%FASTAPI_DIR%"
 if not exist save ( 
     mkdir save 
 )
-start "uvicorn" cmd /k "color 1e & cd %FASTAPI_DIR% & call pip_install.cmd & uvicorn main:app --reload"
+start "uvicorn" cmd /k "color 1e & cd %FASTAPI_DIR% & pip install -r requirements.txt & uvicorn main:app --reload"
 
 echo Starting the proxy server that glues the frontend and backend together
 set "NGINX_DIR=%WORKING_DIR%\nginx"
