@@ -43,7 +43,8 @@ class AiObjectFactory:
         responseJsonStr = await self.ai_engine.chat_completion_async(context)
         responseJson = json.loads(responseJsonStr)
         responseJson["image"] = await self.ai_engine.text_to_image_async(
-            responseJson["description"]
+            responseJson["description"],
+            size=(768,768)
         )
 
         return Location(**responseJson)
@@ -51,7 +52,7 @@ class AiObjectFactory:
     async def create_item_image(self, description: str) -> str:
         return await self.ai_engine.text_to_image_async(
             description, 
-            size="128x128"  # TODO: Actually make this work.
+            size=(128,128)  # TODO: Actually make this work.
         )
 
     async def create_item(self, backstory: str) -> Item:

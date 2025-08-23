@@ -5,3 +5,4 @@ pip install Pillow
 pip install pydantic
 pip install "uvicorn[standard]"
 pip install wonderwords
+

@@ -14,6 +14,22 @@
             }
         },
         {
+            "engine_class": "AiEngineHuggingFaceWithLocalImageGeneration",
+            "token_file": "token-hf.txt",
+            "properties": {
+                "text_model": "meta-llama/Meta-Llama-3-8B-Instruct",
+                "image_library": "C:\\Users\\jason\\Desktop\\AIFromScratch\\stable_diffusion_wrapper.py"
+            }
+        },
+        {
+            "engine_class": "AiEngineHuggingFaceWithLocalImageGeneration",
+            "token_file": "token-hf.txt",
+            "properties": {
+                "text_model": "meta-llama/Meta-Llama-3-8B-Instruct",
+                "image_library": "C:\\Users\\jason\\Desktop\\AIFromScratch\\flux_dev_stock.py"
+            }
+        },
+        {
             "engine_class": "AiEngineOpenAI",
             "token_file": "token-openai.txt",
             "properties": {
@@ -23,6 +39,6 @@
             }
         }
     ],
-    "chosen_aiengine": 1,
+    "chosen_aiengine": 3,
     "save_file": "save/world.json"
 }

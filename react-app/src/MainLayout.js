@@ -41,7 +41,7 @@ export function MainLayout({ apiEndpoint }) {
                 setEntry({
                     name: data.name,
                     description: data.description,
-                    imageSrc: `data:image/png;base64,${data.image}`
+                    imageSrc: data.image
                 });
             })
             .catch(err => setError(err.message))

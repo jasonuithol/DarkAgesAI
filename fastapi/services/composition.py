@@ -1,3 +1,6 @@
+# composition.py
+# This is a hand-rolled dependency injection system.
+
 import aiofiles
 import importlib
 

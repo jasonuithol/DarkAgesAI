@@ -13,6 +13,8 @@ import base64
 import json
 import random
 
+import importlib, os, sys
+
 from io import BytesIO
 from PIL import Image
 from typing import Protocol, Tuple
@@ -21,6 +23,8 @@ from typing import Protocol, Tuple
 
 from wonderwords import RandomSentence, RandomWord
 from huggingface_hub import InferenceClient 
+
+local_image_lock = asyncio.Lock()
 
 class AiChatContext:
     def __init__(self):
@@ -88,7 +92,9 @@ class AiEngineTest(AiEngine):
         image.save(buffer, format="PNG")  # PIL compatible.
 
         # Convert the image to base64 and return
-        return base64.b64encode(buffer.getvalue()).decode("utf-8")
+        base64_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
+        image_base64 = f"data:image/png;base64,{base64_str}"
+        return image_base64
 
     async def text_to_image_async(self, prompt, size: Tuple[int,int]=None):
         return await asyncio.get_running_loop().run_in_executor(
@@ -131,11 +137,50 @@ class AiEngineHuggingFace(AiEngine):
             image = self.client.text_to_image(prompt, model=self.image_model)
         buffer = BytesIO()
         image.save(buffer, format="PNG")  # PIL compatible.
-        return base64.b64encode(buffer.getvalue()).decode("utf-8")
+        base64_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
+        image_base64 = f"data:image/png;base64,{base64_str}"
+        return image_base64
 
     async def text_to_image_async(self, prompt: str, size: Tuple[int,int]=None) -> str:
         return await asyncio.get_running_loop().run_in_executor(
-            None, lambda: self.text_to_image(prompt)
+            None, lambda: self.text_to_image(prompt, size)
         )
 
+class AiEngineHuggingFaceWithLocalImageGeneration(AiEngineHuggingFace):
 
+    def __init__(self, text_model: str, image_library: str, token: str):
+        super().__init__(text_model=text_model, image_model=None, token=token)
+
+        module_dir = os.path.dirname(image_library)
+        sys.path.insert(0, module_dir)  # Add image.py's directory to sys.path, allowing it to load it's local sublibraries.
+
+        spec = importlib.util.spec_from_file_location(name="image_module", location=image_library)
+        self.image_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.image_module)
+
+        print(f"Dynamically loaded image model library: {image_library}")
+
+        sys.path.pop(0)  # Clean up after import
+
+    # DarkAgesAI:AiEngine compatible.
+    def text_to_image(self, prompt: str, size: Tuple[int,int]=None) -> str:
+        
+        image_pil = self.image_module.generate_image(
+            prompt=prompt,
+            num_timesteps=28, 
+            random_seed=42,
+            image_size=size
+        )
+
+        buffer = BytesIO()
+        image_pil.save(buffer, format="PNG")
+        base64_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
+        image_base64 = f"data:image/png;base64,{base64_str}"
+        return image_base64
+    
+    async def text_to_image_async(self, prompt: str, size: Tuple[int,int]=None) -> str:
+
+        async with local_image_lock:
+            return await asyncio.get_running_loop().run_in_executor(
+                None, lambda: self.text_to_image(prompt, size)
+            )

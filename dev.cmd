@@ -3,18 +3,42 @@
 set "WORKING_DIR=%~dp0"
 cd "%WORKING_DIR%"
 
-rem Start the React frontend server
+echo Starting the React frontend server
 start "npm" cmd /k "color 04 && cd react-app && npm install && npm start && title npm"
 
-rem Start the FastAPI backend server
-start "uvicorn" cmd /k "color 1e && cd fastapi && pip_install.cmd && if not exist save mkdir save && uvicorn main:app --reload"
+echo Starting the FastAPI backend server
+set "FASTAPI_DIR=%WORKING_DIR%\fastapi"
+cd "%FASTAPI_DIR%"
+if not exist save ( 
+    mkdir save 
+)
+start "uvicorn" cmd /k "color 1e & cd %FASTAPI_DIR% & call pip_install.cmd & uvicorn main:app --reload"
 
-rem Start the proxy server that glues the frontend and backend together
-start "nginx" cmd /k "color 0a && cd nginx && if not exist logs mkdir logs && if not exist temp mkdir temp && nginx -c nginx.conf"
+echo Starting the proxy server that glues the frontend and backend together
+set "NGINX_DIR=%WORKING_DIR%\nginx"
+cd "%NGINX_DIR%"
+if not exist logs ( 
+    mkdir logs 
+)
+if not exist temp ( 
+    mkdir temp 
+)
+taskkill /IM nginx.exe /F >nul 2>&1
+start "nginx" cmd /k "color 0a & cd %NGINX_DIR% & nginx"
 
-rem Wait for the services to start
-timeout /t 15 /nobreak >nul
+echo Waiting 15 seconds for the services to start
+timeout /t 5 /nobreak >nul
 
-rem Open the browser and check git status
-start "general" cmd /k "color 0e && start http://localhost && echo Ready"
+echo Waiting 10 seconds for the services to start
+timeout /t 5 /nobreak >nul
 
+echo Waiting 5 seconds for the services to start
+timeout /t 5 /nobreak >nul
+
+echo Starting web browser (http://localhost)
+start "general" cmd /k "color 0e & start http://localhost & echo Use this window to run `taskkill /IM (process name) /F` or other business."
+
+echo Press any key to close this window
+pause >nul
+
+rem TODO: Kill all the processes opened by this script here.

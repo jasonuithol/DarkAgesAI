@@ -20,7 +20,7 @@ export function ItemGallery({ apiEndpoint, actionPostUrl, actionButtonText, setA
                     name: item.name,
                     description: item.description,
                     item_type: item.item_type,
-                    imageSrc: `data:image/png;base64,${item.image}`
+                    imageSrc: item.image
                 }));
                 setEntries(transformed);
             })
