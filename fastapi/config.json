@@ -6,6 +6,11 @@
             "properties": {}
         },
         {
+            "engine_class": "AiEngineError",
+            "token_file": null,
+            "properties": {}
+        },
+        {
             "engine_class": "AiEngineHuggingFace",
             "token_file": "token-hf.txt",
             "properties": {
@@ -39,6 +44,6 @@
             }
         }
     ],
-    "chosen_aiengine": 3,
+    "chosen_aiengine": 1,
     "save_file": "save/world.json"
 }

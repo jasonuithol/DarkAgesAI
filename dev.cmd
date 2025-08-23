@@ -24,7 +24,7 @@ if not exist temp (
     mkdir temp 
 )
 taskkill /IM nginx.exe /F >nul 2>&1
-start "nginx" cmd /k "color 0a & cd %NGINX_DIR% & nginx"
+start "nginx" cmd /k "color 0a & cd %NGINX_DIR% & nginx -t && echo launching application proxy (nginx) && nginx"
 
 echo Waiting 15 seconds for the services to start
 timeout /t 5 /nobreak >nul

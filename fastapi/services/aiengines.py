@@ -101,6 +101,20 @@ class AiEngineTest(AiEngine):
             None, lambda: self.text_to_image(prompt)
         )
 
+# A fake AI engine for testing the rest of the application without using an actual AI service.
+class AiEngineError(AiEngine):
+    def chat_completion(self, context: AiChatContext) -> str:
+        raise "Fake chat completion error"
+
+    async def chat_completion_async(self, context: AiChatContext) -> str:
+        raise "Fake chat completion async error"
+
+    def text_to_image(self, prompt: str, size: Tuple[int,int]=None) -> str:
+        raise "Fake text to image error"
+
+    async def text_to_image_async(self, prompt, size: Tuple[int,int]=None):
+        raise "Fake text to image async error"
+    
 class AiEngineHuggingFace(AiEngine):
     def __init__(self, text_model: str, image_model: str, token: str): 
         self.text_model = text_model

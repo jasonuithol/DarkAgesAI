@@ -5,6 +5,8 @@ import { ItemGallery } from './ItemGallery';
 import { BattleSpinner } from './BattleSpinner';
 import { LocationDetails } from './LocationDetails';
 
+import { earthEatingDemon } from './ErrorHandling';
+
 export function MainLayout({ apiEndpoint }) {
 
     console.log("MainLayout loaded");
@@ -33,8 +35,10 @@ export function MainLayout({ apiEndpoint }) {
     useEffect(() => {
         setLoading(true);
         fetch(apiEndpoint)
-            .then(res => {
-                if (!res.ok) throw new Error('Failed to fetch data');
+            .then(async res => {
+                if (!res.ok) {
+                    return await earthEatingDemon(res.status, res.statusText);
+                }
                 return res.json();
             })
             .then(data => {
@@ -44,7 +48,9 @@ export function MainLayout({ apiEndpoint }) {
                     imageSrc: data.image
                 });
             })
-            .catch(err => setError(err.message))
+            .catch(err => {
+                setError(err.message);
+            })
             .finally(() => setLoading(false));
     }, [apiEndpoint, refreshKey]); // 🔄 re-run when refreshKey changes
 
@@ -63,7 +69,12 @@ export function MainLayout({ apiEndpoint }) {
             method: 'POST',
             body: direction
         })
-            .then(res => res.json())
+            .then(async res => {
+                if (!res.ok) {
+                    return await earthEatingDemon(res.status, res.statusText);
+                }
+                return res.json()
+            })
             .then(data => {
                 if (data.result === 'OK') {
                     setRefreshKey(prev => prev + 1); // ✅ reload data
