@@ -43,6 +43,14 @@
             }
         },
         {
+            "engine_class": "AiEngineHuggingFaceWithLocalImageGeneration",
+            "token_file": "token-hf.txt",
+            "properties": {
+                "text_model": "meta-llama/Meta-Llama-3-8B-Instruct",
+                "image_library": "C:\\Users\\jason\\Desktop\\AIFromScratch\\flux_dev_quantized.py"
+            }
+        },
+        {
             "engine_class": "AiEngineOpenAI",
             "token_file": "token-openai.txt",
             "properties": {
@@ -52,6 +60,6 @@
             }
         }
     ],
-    "chosen_aiengine": 5,
+    "chosen_aiengine": 6,
     "save_file": "save/world.json"
 }
