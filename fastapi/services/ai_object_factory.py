@@ -34,24 +34,25 @@ class AiObjectFactory:
                 f"These are the surrounding locations in a dictionary.  Please make the new location consistent with it's known (charted) surrounds: \n{exits}",
                 f"Come up with a short, unique name for this location, and say ONLY the name, no other guff please. The following names are already taken: {list(map(lambda x: x.name, locations.values()))}",
                 "Also describe what you see in this location only (do not describe exits, or other locations).  Do not describe items.",
+                "Finally, create a prompt for an image generator not exceeding 77 tokens."
             ]
         )
         context.add_user_message(
-            'Give the response in this JSON format: {"name": "<the name of the location>", "description": "<the description of the location>"}'
+            'Give the response in this JSON format: {"name": "<the name of the location>", "description": "<the description of the location>", "image_prompt: "<the prompt for the image generator (max 77 tokens)>"}'
         )
 
         responseJsonStr = await self.ai_engine.chat_completion_async(context)
         responseJson = json.loads(responseJsonStr)
         responseJson["image"] = await self.ai_engine.text_to_image_async(
-            responseJson["description"],
+            responseJson["image_prompt"],
             size=(768,768)
         )
 
         return Location(**responseJson)
 
-    async def create_item_image(self, description: str) -> str:
+    async def create_item_image(self, image_prompt: str) -> str:
         return await self.ai_engine.text_to_image_async(
-            description, 
+            image_prompt, 
             size=(128,128)  # TODO: Actually make this work.
         )
 
@@ -71,10 +72,11 @@ class AiObjectFactory:
                 f"You have found a new {item_type} at the current game location.",
                 f"Come up with a short, unique name for this item, and say ONLY the name, no other guff please. Example: 'Ebony Sword'",
                 f"Also describe the {item_type} you have just found.  Describe ONLY the {item_type}, and not anything else e.g. it's surrounds, stats, nor any sort of random sidequest associated with it.  Keep it focussed.",
+                "Finally, create a prompt for an image generator not exceeding 77 tokens."
             ]
         )
         context.add_user_message(
-            'Give the response in this JSON format: {"name": "<the name of the item>", "description": "<the description of the item>"}'
+            'Give the response in this JSON format: {"name": "<the name of the item>", "description": "<the description of the item>", "image_prompt: "<the prompt for the image generator (max 77 tokens)>"}'
         )
 
         responseJsonStr = await self.ai_engine.chat_completion_async(context)
@@ -82,7 +84,7 @@ class AiObjectFactory:
         responseJson["item_type"] = item_type
 
         # Create an image for the item.
-        responseJson["image"] = await self.create_item_image(responseJson["description"])
+        responseJson["image"] = await self.create_item_image(responseJson["image_prompt"])
 
         return Item(**responseJson)
     '''
@@ -107,17 +109,18 @@ class AiObjectFactory:
                 f"You have just encountered an enemy. Location: {surroundings}",
                 f"Come up with a short, unique name for this enemy, and say ONLY the name, no other guff please. Example: 'Flesh Reaping Worm'",
                 f"Also describe the enemy you have just found.  Describe ONLY the enemy, and not anything else e.g. it's surrounds, stats, nor any sort of random sidequest associated with it.  Keep it focussed.",
+                "Finally, create a prompt for an image generator not exceeding 77 tokens."
             ]
         )
         context.add_user_message(
-            'Give the response in this JSON format: {"name": "<the name of the item>", "description": "<the description of the item>"}'
+            'Give the response in this JSON format: {"name": "<the name of the enemy>", "description": "<the description of the enemy>", "image_prompt: "<the prompt for the image generator (max 77 tokens)>"}'
         )
 
         responseJsonStr = await self.ai_engine.chat_completion_async(context)
         responseJson = json.loads(responseJsonStr)
 
         # Create an image for the item.
-        responseJson["image"] = await self.create_item_image(responseJson["description"])
+        responseJson["image"] = await self.create_item_image(responseJson["image_prompt"])
 
         return Enemy(**responseJson)
     

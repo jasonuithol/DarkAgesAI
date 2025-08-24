@@ -18,6 +18,7 @@ class Item(BaseModel):
     item_type: str
     name: str
     description: Optional[str]
+    image_prompt: Optional[str]
     image: str # a base64 encoded PNG
 
     def to_typed_item(self) -> Item:
