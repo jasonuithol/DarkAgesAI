@@ -181,8 +181,6 @@ class AiEngineHuggingFaceWithLocalImageGeneration(AiEngineHuggingFace):
         
         image_pil = self.image_module.generate_image(
             prompt=prompt,
-            num_timesteps=28, 
-            random_seed=42,
             image_size=size
         )
 
